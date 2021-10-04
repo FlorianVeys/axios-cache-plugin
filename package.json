@@ -6,7 +6,8 @@
     "dev": "nodemon",
     "build": "rimraf ./build && tsc",
     "start": "npm run build && node build/index.js",
-    "test": "jest --detectOpenHandles"
+    "test": "jest --detectOpenHandles",
+    "prepare": "husky install"
   },
   "keywords": [],
   "author": "",
@@ -15,11 +16,14 @@
     "node-cache": "^5.1.2"
   },
   "devDependencies": {
+    "@commitlint/cli": "^13.2.0",
+    "@commitlint/config-conventional": "^13.2.0",
     "@types/axios": "^0.14.0",
     "@types/jest": "^27.0.2",
     "@types/node": "^16.9.1",
     "@types/node-cache": "^4.2.5",
     "axios": "^0.22.0",
+    "husky": "^7.0.2",
     "jest-create-mock-instance": "^1.1.0",
     "nodemon": "^2.0.12",
     "rimraf": "^3.0.2",
