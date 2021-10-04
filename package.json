@@ -12,13 +12,13 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@types/node-cache": "^4.2.5",
     "node-cache": "^5.1.2"
   },
   "devDependencies": {
     "@types/axios": "^0.14.0",
     "@types/jest": "^27.0.2",
     "@types/node": "^16.9.1",
+    "@types/node-cache": "^4.2.5",
     "axios": "^0.22.0",
     "jest-create-mock-instance": "^1.1.0",
     "nodemon": "^2.0.12",
