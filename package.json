@@ -13,6 +13,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "md5": "^2.3.0",
     "node-cache": "^5.1.2"
   },
   "devDependencies": {
@@ -20,6 +21,7 @@
     "@commitlint/config-conventional": "^13.2.0",
     "@types/axios": "^0.14.0",
     "@types/jest": "^27.0.2",
+    "@types/md5": "^2.3.1",
     "@types/node": "^16.9.1",
     "@types/node-cache": "^4.2.5",
     "axios": "^0.22.0",

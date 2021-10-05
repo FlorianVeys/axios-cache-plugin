@@ -1,8 +1,4 @@
-import {
-  Axios,
-  AxiosRequestConfig,
-  AxiosResponse,
-} from '../infrastructure/axios';
+import { Axios, AxiosRequestConfig, AxiosResponse } from '../infrastructure';
 import { AxiosCachePluginConfig } from '..';
 import { getInterceptor } from './interceptors';
 
