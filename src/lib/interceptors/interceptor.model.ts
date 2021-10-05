@@ -1,5 +1,5 @@
 import { AxiosRequestConfig, AxiosResponse, hash } from '../../infrastructure';
-import { CacheValue } from '../cache.model';
+import { AxiosPluginHeader, CacheValue } from '../cache.model';
 import { AxiosCachePluginConfig } from '../config';
 
 export abstract class Interceptor {
@@ -28,7 +28,10 @@ export abstract class Interceptor {
       data: cacheContent.data,
       status: cacheContent.status,
       statusText: cacheContent.statusText,
-      headers: cacheContent.headers,
+      headers: {
+        ...cacheContent.headers,
+        [AxiosPluginHeader.CACHE_HIT_HEADER]: 'true',
+      },
       config: request,
     };
   }

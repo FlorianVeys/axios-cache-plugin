@@ -2,7 +2,7 @@ import { AxiosRequestConfig, AxiosResponse } from '../../infrastructure';
 import { AxiosCachePluginConfig } from '../config';
 import { Interceptor, InterceptorId } from '.';
 import NodeCache from 'node-cache';
-import { CacheValue } from '../cache.model';
+import { CacheValue, AxiosPluginHeader } from '../cache.model';
 
 export class NodeCacheInterceptor extends Interceptor {
   id = InterceptorId.NODE_CACHE;
@@ -27,16 +27,19 @@ export class NodeCacheInterceptor extends Interceptor {
       // Fake api call and return cache content provide by header
       request.adapter = (config: AxiosRequestConfig) => {
         return new Promise((resolve, reject) => {
-          if (config?.headers && config?.headers['axios-cache-plugin-result']) {
+          if (
+            config?.headers &&
+            config?.headers[AxiosPluginHeader.CACHE_CONTENT_HEADER]
+          ) {
             return resolve(
-              JSON.parse(config.headers['axios-cache-plugin-result'])
+              JSON.parse(config.headers[AxiosPluginHeader.CACHE_CONTENT_HEADER])
             );
           }
           return reject('Unable to load local datas');
         });
       };
       request.headers = {
-        'axios-cache-plugin-result': JSON.stringify(response),
+        [AxiosPluginHeader.CACHE_CONTENT_HEADER]: JSON.stringify(response),
         ...request.headers,
       };
     }
@@ -44,8 +47,11 @@ export class NodeCacheInterceptor extends Interceptor {
     return request;
   }
   responseInterceptor(response: AxiosResponse): any {
-    const key = this.getKey(response?.config);
-    this.nodeCache?.set(key, this.constructCacheContent(response));
+    // Avoid storing new cache content if response come from cache
+    if (!response?.headers[AxiosPluginHeader.CACHE_HIT_HEADER]) {
+      const key = this.getKey(response?.config);
+      this.nodeCache?.set(key, this.constructCacheContent(response));
+    }
 
     return response;
   }
