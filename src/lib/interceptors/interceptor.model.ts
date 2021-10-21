@@ -36,6 +36,19 @@ export abstract class Interceptor {
     };
   }
 
+  protected isCacheAllowed(response: AxiosResponse): boolean {
+    const request = response.request as AxiosRequestConfig;
+    if (!request) {
+      return false;
+    }
+
+    if (request.method !== 'GET') {
+      return false;
+    }
+
+    return true;
+  }
+
   abstract init(config: AxiosCachePluginConfig): this;
   abstract requestInterceptor(request: AxiosRequestConfig): any;
   abstract responseInterceptor(response: AxiosResponse): any;

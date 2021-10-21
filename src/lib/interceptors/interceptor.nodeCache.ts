@@ -46,11 +46,14 @@ export class NodeCacheInterceptor extends Interceptor {
 
     return request;
   }
+
   responseInterceptor(response: AxiosResponse): any {
     // Avoid storing new cache content if response come from cache
-    if (!response?.headers[AxiosPluginHeader.CACHE_HIT_HEADER]) {
-      const key = this.getKey(response?.config);
-      this.nodeCache?.set(key, this.constructCacheContent(response));
+    if (this.isCacheAllowed(response)) {
+      if (!response?.headers[AxiosPluginHeader.CACHE_HIT_HEADER]) {
+        const key = this.getKey(response?.config);
+        this.nodeCache?.set(key, this.constructCacheContent(response));
+      }
     }
 
     return response;
