@@ -1,8 +1,15 @@
+import { CacheValidator } from '.';
 import { AxiosRequestConfig, AxiosResponse, hash } from '../../infrastructure';
 import { AxiosPluginHeader, CacheValue } from '../cache.model';
 import { AxiosCachePluginConfig } from '../config';
 
 export abstract class Interceptor {
+  private cacheValidator: CacheValidator;
+
+  constructor() {
+    this.cacheValidator = new CacheValidator();
+  }
+
   abstract id: CachePlugin;
   abstract init(config: AxiosCachePluginConfig): this;
   abstract set(key: string, content: CacheValue): void;
@@ -40,16 +47,7 @@ export abstract class Interceptor {
   }
 
   protected isCacheAllowed(response: AxiosResponse): boolean {
-    const request = response.request as AxiosRequestConfig;
-    if (!request) {
-      return false;
-    }
-
-    if (request.method !== 'GET') {
-      return false;
-    }
-
-    return true;
+    return this.cacheValidator.isResponseCacheable(response);
   }
 
   requestInterceptor(request: AxiosRequestConfig): any {

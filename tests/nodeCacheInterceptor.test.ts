@@ -235,4 +235,22 @@ describe('Node cache interceptor', () => {
     expect(requestInterceptorCounter).toEqual(2);
     expect(responseInterceptorCounter).toEqual(2);
   });
+
+  it('should not cache if response 500', async () => {
+    server = createHttpServer((req: IncomingMessage, res: ServerResponse) => {
+      callstack++;
+      res.writeHead(500);
+      res.end('hello');
+    });
+
+    const config = getConfig();
+
+    setup(axios, config);
+
+    await axios.get('toto');
+
+    await axios.get('toto');
+
+    expect(callstack).toEqual(2);
+  });
 });
