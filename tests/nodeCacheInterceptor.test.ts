@@ -101,7 +101,7 @@ describe('Node cache interceptor', () => {
     expect(callstack).toEqual(2);
   });
 
-  it("shouldn't cache post request by default without cache header", async () => {
+  it("shouldn't cache POST request by default", async () => {
     server = createHttpServer((req: IncomingMessage, res: ServerResponse) => {
       callstack++;
 
@@ -114,6 +114,74 @@ describe('Node cache interceptor', () => {
 
     await axios.post('toto');
     await axios.post('toto');
+
+    expect(callstack).toEqual(2);
+  });
+
+  it("shouldn't cache DELETE request by default", async () => {
+    server = createHttpServer((req: IncomingMessage, res: ServerResponse) => {
+      callstack++;
+
+      res.setHeader('Content-Type', 'application/json');
+      res.end(JSON.stringify({ a: 1 }));
+    });
+    const config = getConfig();
+
+    setup(axios, config);
+
+    await axios.delete('toto');
+    await axios.delete('toto');
+
+    expect(callstack).toEqual(2);
+  });
+
+  it("shouldn't cache PUT request by default", async () => {
+    server = createHttpServer((req: IncomingMessage, res: ServerResponse) => {
+      callstack++;
+
+      res.setHeader('Content-Type', 'application/json');
+      res.end(JSON.stringify({ a: 1 }));
+    });
+    const config = getConfig();
+
+    setup(axios, config);
+
+    await axios.put('toto');
+    await axios.put('toto');
+
+    expect(callstack).toEqual(2);
+  });
+
+  it("shouldn't cache PATCH request by default", async () => {
+    server = createHttpServer((req: IncomingMessage, res: ServerResponse) => {
+      callstack++;
+
+      res.setHeader('Content-Type', 'application/json');
+      res.end(JSON.stringify({ a: 1 }));
+    });
+    const config = getConfig();
+
+    setup(axios, config);
+
+    await axios.patch('toto');
+    await axios.patch('toto');
+
+    expect(callstack).toEqual(2);
+  });
+
+  it("shouldn't cache HEAD request by default", async () => {
+    server = createHttpServer((req: IncomingMessage, res: ServerResponse) => {
+      callstack++;
+
+      res.setHeader('Content-Type', 'application/json');
+      res.end(JSON.stringify({ a: 1 }));
+    });
+    const config = getConfig();
+
+    setup(axios, config);
+
+    await axios.head('toto');
+    await axios.head('toto');
 
     expect(callstack).toEqual(2);
   });
