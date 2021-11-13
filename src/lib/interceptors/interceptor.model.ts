@@ -3,7 +3,7 @@ import { AxiosPluginHeader, CacheValue } from '../cache.model';
 import { AxiosCachePluginConfig } from '../config';
 
 export abstract class Interceptor {
-  abstract id: InterceptorId;
+  abstract id: CachePlugin;
   abstract init(config: AxiosCachePluginConfig): this;
   abstract set(key: string, content: CacheValue): void;
   abstract get(key: string): CacheValue | undefined;
@@ -94,6 +94,6 @@ export abstract class Interceptor {
   }
 }
 
-export enum InterceptorId {
+export enum CachePlugin {
   NODE_CACHE = 'NODE_CACHE',
 }

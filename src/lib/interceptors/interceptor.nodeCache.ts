@@ -1,10 +1,10 @@
 import { AxiosCachePluginConfig } from '../config';
-import { Interceptor, InterceptorId } from '.';
+import { Interceptor, CachePlugin } from '.';
 import NodeCache from 'node-cache';
 import { CacheValue } from '../cache.model';
 
 export class NodeCacheInterceptor extends Interceptor {
-  id = InterceptorId.NODE_CACHE;
+  id = CachePlugin.NODE_CACHE;
 
   private nodeCache?: NodeCache;
 

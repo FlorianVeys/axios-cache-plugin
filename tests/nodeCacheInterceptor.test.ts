@@ -1,14 +1,14 @@
 import { Axios, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { IncomingMessage, Server, ServerResponse } from 'http';
 import { AxiosCachePluginConfig, setup } from '../src';
-import { InterceptorId } from '../src/lib/interceptors';
+import { CachePlugin } from '../src/lib/interceptors';
 import { createHttpServer, sleep } from './test.helpers';
 
 function getConfig(
   base?: Partial<AxiosCachePluginConfig>
 ): AxiosCachePluginConfig {
   return {
-    interceptor: InterceptorId.NODE_CACHE,
+    plugin: CachePlugin.NODE_CACHE,
     defaultTtl: 300,
     ...base,
   } as AxiosCachePluginConfig;
