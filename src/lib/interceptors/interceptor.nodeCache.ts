@@ -1,8 +1,7 @@
-import { AxiosRequestConfig, AxiosResponse } from '../../infrastructure';
 import { AxiosCachePluginConfig } from '../config';
 import { Interceptor, InterceptorId } from '.';
 import NodeCache from 'node-cache';
-import { CacheValue, AxiosPluginHeader } from '../cache.model';
+import { CacheValue } from '../cache.model';
 
 export class NodeCacheInterceptor extends Interceptor {
   id = InterceptorId.NODE_CACHE;
