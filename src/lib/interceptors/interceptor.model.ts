@@ -4,6 +4,9 @@ import { AxiosCachePluginConfig } from '../config';
 
 export abstract class Interceptor {
   abstract id: InterceptorId;
+  abstract init(config: AxiosCachePluginConfig): this;
+  abstract set(key: string, content: CacheValue): void;
+  abstract get(key: string): CacheValue | undefined;
 
   protected getKey(request: AxiosRequestConfig): string {
     return `${request?.method ?? ''}-${hash(request?.url)}-${hash(
@@ -49,9 +52,46 @@ export abstract class Interceptor {
     return true;
   }
 
-  abstract init(config: AxiosCachePluginConfig): this;
-  abstract requestInterceptor(request: AxiosRequestConfig): any;
-  abstract responseInterceptor(response: AxiosResponse): any;
+  requestInterceptor(request: AxiosRequestConfig): any {
+    const key = this.getKey(request);
+    const cacheContent = this.get(key);
+
+    if (cacheContent) {
+      const response = this.constructAxiosResponse(cacheContent, request);
+      // Fake api call and return cache content provide by header
+      request.adapter = (config: AxiosRequestConfig) => {
+        return new Promise((resolve, reject) => {
+          if (
+            config?.headers &&
+            config?.headers[AxiosPluginHeader.CACHE_CONTENT_HEADER]
+          ) {
+            return resolve(
+              JSON.parse(config.headers[AxiosPluginHeader.CACHE_CONTENT_HEADER])
+            );
+          }
+          return reject('Unable to load local datas');
+        });
+      };
+      request.headers = {
+        [AxiosPluginHeader.CACHE_CONTENT_HEADER]: JSON.stringify(response),
+        ...request.headers,
+      };
+    }
+
+    return request;
+  }
+
+  responseInterceptor(response: AxiosResponse): any {
+    // Avoid storing new cache content if response come from cache
+    if (this.isCacheAllowed(response)) {
+      if (!response?.headers[AxiosPluginHeader.CACHE_HIT_HEADER]) {
+        const key = this.getKey(response?.config);
+        this.set(key, this.constructCacheContent(response));
+      }
+    }
+
+    return response;
+  }
 }
 
 export enum InterceptorId {

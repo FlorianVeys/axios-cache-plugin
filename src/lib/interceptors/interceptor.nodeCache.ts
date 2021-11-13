@@ -18,44 +18,17 @@ export class NodeCacheInterceptor extends Interceptor {
     return this;
   }
 
-  requestInterceptor(request: AxiosRequestConfig): any {
-    const key = this.getKey(request);
-    const cacheContent = this.nodeCache?.get<CacheValue>(key);
-
-    if (cacheContent) {
-      const response = this.constructAxiosResponse(cacheContent, request);
-      // Fake api call and return cache content provide by header
-      request.adapter = (config: AxiosRequestConfig) => {
-        return new Promise((resolve, reject) => {
-          if (
-            config?.headers &&
-            config?.headers[AxiosPluginHeader.CACHE_CONTENT_HEADER]
-          ) {
-            return resolve(
-              JSON.parse(config.headers[AxiosPluginHeader.CACHE_CONTENT_HEADER])
-            );
-          }
-          return reject('Unable to load local datas');
-        });
-      };
-      request.headers = {
-        [AxiosPluginHeader.CACHE_CONTENT_HEADER]: JSON.stringify(response),
-        ...request.headers,
-      };
+  get(key: string): CacheValue | undefined {
+    if (!this.nodeCache) {
+      throw new Error('Issue in cache initializer');
     }
-
-    return request;
+    return this.nodeCache.get<CacheValue>(key);
   }
 
-  responseInterceptor(response: AxiosResponse): any {
-    // Avoid storing new cache content if response come from cache
-    if (this.isCacheAllowed(response)) {
-      if (!response?.headers[AxiosPluginHeader.CACHE_HIT_HEADER]) {
-        const key = this.getKey(response?.config);
-        this.nodeCache?.set(key, this.constructCacheContent(response));
-      }
+  set(key: string, content: CacheValue): void {
+    if (!this.nodeCache) {
+      throw new Error('Issue in cache initializer');
     }
-
-    return response;
+    this.nodeCache.set(key, content);
   }
 }
