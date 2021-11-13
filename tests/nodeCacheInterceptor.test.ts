@@ -191,7 +191,7 @@ describe('Node cache interceptor', () => {
       callstack++;
       res.end('hello');
     });
-    // 5ms of ttl
+    // 1 second of ttl
     const config = getConfig({
       defaultTtl: 1,
     });
@@ -210,16 +210,18 @@ describe('Node cache interceptor', () => {
       callstack++;
       res.end('hello');
     });
-    // 5ms of ttl
+    let requestInterceptorCounter = 0;
+    let responseInterceptorCounter = 0;
+
     const config = getConfig();
 
     axios.interceptors.request.use((request: AxiosRequestConfig) => {
-      console.log('Custom request interceptor set !');
+      requestInterceptorCounter++;
       return request;
     });
 
     axios.interceptors.response.use((response: AxiosResponse) => {
-      console.log('Custom response interceptor set !');
+      responseInterceptorCounter++;
       return response;
     });
 
@@ -227,6 +229,10 @@ describe('Node cache interceptor', () => {
 
     await axios.get('toto');
 
+    await axios.get('toto');
+
     expect(callstack).toEqual(1);
+    expect(requestInterceptorCounter).toEqual(2);
+    expect(responseInterceptorCounter).toEqual(2);
   });
 });
