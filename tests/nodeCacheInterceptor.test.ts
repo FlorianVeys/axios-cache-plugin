@@ -2,15 +2,15 @@ import { Axios } from 'axios';
 import { IncomingMessage, Server, ServerResponse } from 'http';
 import { AxiosCachePluginConfig, setup } from '../src';
 import { InterceptorId } from '../src/lib/interceptors';
-import { createHttpServer } from './test.helpers';
+import { createHttpServer, sleep } from './test.helpers';
 
 function getConfig(
   base?: Partial<AxiosCachePluginConfig>
 ): AxiosCachePluginConfig {
   return {
-    ...base,
     interceptor: InterceptorId.NODE_CACHE,
     defaultTtl: 300,
+    ...base,
   } as AxiosCachePluginConfig;
 }
 
@@ -97,6 +97,25 @@ describe('Node cache interceptor', () => {
 
     await axios.post('toto');
     await axios.post('toto');
+
+    expect(callstack).toEqual(2);
+  });
+
+  it('should call twice same route if ttl expired', async () => {
+    server = createHttpServer((req: IncomingMessage, res: ServerResponse) => {
+      callstack++;
+      res.end('hello');
+    });
+    // 5ms of ttl
+    const config = getConfig({
+      defaultTtl: 1,
+    });
+
+    setup(axios, config);
+
+    await axios.get('toto');
+    await sleep(1500);
+    await axios.get('toto');
 
     expect(callstack).toEqual(2);
   });

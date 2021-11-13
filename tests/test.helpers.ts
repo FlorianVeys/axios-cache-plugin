@@ -6,3 +6,9 @@ export function createHttpServer(listener: RequestListener): Server {
 
   return server;
 }
+
+export function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
+}
