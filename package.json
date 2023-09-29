@@ -29,6 +29,7 @@
     "axios": "^0.22.0",
     "husky": "^7.0.2",
     "jest-create-mock-instance": "^1.1.0",
+    "md5": "^2.3.0",
     "node-cache": "^5.1.2",
     "nodemon": "^2.0.12",
     "rimraf": "^3.0.2",
