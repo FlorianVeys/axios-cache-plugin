@@ -16,7 +16,8 @@
     "md5": "^2.3.0"
   },
   "optionalDependencies": {
-    "node-cache": "5.x.x"
+    "node-cache": "5.x.x",
+    "axios": "1.5.x"
   },
   "devDependencies": {
     "@commitlint/cli": "^17.7.2",
