@@ -13,8 +13,10 @@
   "keywords": [],
   "author": "Florian Veys",
   "dependencies": {
-    "md5": "^2.3.0",
-    "node-cache": "^5.1.2"
+    "md5": "^2.3.0"
+  },
+  "optionalDependencies": {
+    "node-cache": "5.x.x"
   },
   "devDependencies": {
     "@commitlint/cli": "^13.2.0",
@@ -27,6 +29,7 @@
     "axios": "^0.22.0",
     "husky": "^7.0.2",
     "jest-create-mock-instance": "^1.1.0",
+    "node-cache": "^5.1.2",
     "nodemon": "^2.0.12",
     "rimraf": "^3.0.2",
     "ts-jest": "^27.0.5",
