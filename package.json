@@ -11,8 +11,7 @@
     "lint": "tsc --noEmit"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "Florian Veys",
   "dependencies": {
     "md5": "^2.3.0",
     "node-cache": "^5.1.2"
