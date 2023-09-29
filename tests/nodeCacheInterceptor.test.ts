@@ -1,4 +1,4 @@
-import { Axios, AxiosRequestConfig, AxiosResponse } from 'axios';
+import { Axios } from 'axios';
 import { IncomingMessage, Server, ServerResponse } from 'http';
 import { AxiosCachePluginConfig, setup } from '../src';
 import { CachePlugin } from '../src/lib/interceptors';
@@ -10,7 +10,7 @@ function getConfig(
   return {
     plugin: CachePlugin.NODE_CACHE,
     defaultTtl: 300,
-    ...base,
+    ...base
   } as AxiosCachePluginConfig;
 }
 
@@ -23,7 +23,7 @@ describe('Node cache interceptor', () => {
     callstack = 0;
 
     axios = new Axios({
-      baseURL: 'http://localhost:3000',
+      baseURL: 'http://localhost:3000'
     });
   });
 
@@ -193,7 +193,7 @@ describe('Node cache interceptor', () => {
     });
     // 1 second of ttl
     const config = getConfig({
-      defaultTtl: 1,
+      defaultTtl: 1
     });
 
     setup(axios, config);
@@ -215,12 +215,12 @@ describe('Node cache interceptor', () => {
 
     const config = getConfig();
 
-    axios.interceptors.request.use((request: AxiosRequestConfig) => {
+    axios.interceptors.request.use((request) => {
       requestInterceptorCounter++;
       return request;
     });
 
-    axios.interceptors.response.use((response: AxiosResponse) => {
+    axios.interceptors.response.use((response) => {
       responseInterceptorCounter++;
       return response;
     });
