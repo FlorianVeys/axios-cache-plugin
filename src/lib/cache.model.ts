@@ -1,4 +1,4 @@
-import { AxiosResponse } from '../infrastructure';
+import { AxiosResponse } from 'axios';
 
 export type CacheValue = Omit<AxiosResponse, 'config' | 'request'>;
 

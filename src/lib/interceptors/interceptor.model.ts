@@ -1,5 +1,6 @@
 import { CacheValidator } from '.';
-import { AxiosRequestConfig, AxiosResponse, hash } from '../../infrastructure';
+import { hash } from '../../infrastructure';
+import { AxiosResponse, InternalAxiosRequestConfig } from 'axios';
 import { AxiosPluginHeader, CacheValue } from '../cache.model';
 import { AxiosCachePluginConfig } from '../config';
 
@@ -15,7 +16,7 @@ export abstract class Interceptor {
   abstract set(key: string, content: CacheValue): void;
   abstract get(key: string): CacheValue | undefined;
 
-  protected getKey(request: AxiosRequestConfig): string {
+  protected getKey(request: InternalAxiosRequestConfig): string {
     return `${request?.method ?? ''}-${hash(request?.url)}-${hash(
       JSON.stringify(request?.params)
     )}-${hash(JSON.stringify(request?.data))}`;
@@ -26,13 +27,13 @@ export abstract class Interceptor {
       data: response.data,
       status: response.status,
       statusText: response.statusText,
-      headers: response.headers,
+      headers: response.headers
     };
   }
 
   protected constructAxiosResponse(
     cacheContent: CacheValue,
-    request: AxiosRequestConfig
+    request: InternalAxiosRequestConfig
   ): AxiosResponse<any> {
     return {
       data: cacheContent.data,
@@ -40,9 +41,9 @@ export abstract class Interceptor {
       statusText: cacheContent.statusText,
       headers: {
         ...cacheContent.headers,
-        [AxiosPluginHeader.CACHE_HIT_HEADER]: 'true',
+        [AxiosPluginHeader.CACHE_HIT_HEADER]: 'true'
       },
-      config: request,
+      config: request
     };
   }
 
@@ -50,14 +51,14 @@ export abstract class Interceptor {
     return this.cacheValidator.isResponseCacheable(response);
   }
 
-  requestInterceptor(request: AxiosRequestConfig): any {
+  requestInterceptor(request: InternalAxiosRequestConfig): any {
     const key = this.getKey(request);
     const cacheContent = this.get(key);
 
     if (cacheContent) {
       const response = this.constructAxiosResponse(cacheContent, request);
       // Fake api call and return cache content provide by header
-      request.adapter = (config: AxiosRequestConfig) => {
+      request.adapter = (config: InternalAxiosRequestConfig) => {
         return new Promise((resolve, reject) => {
           if (
             config?.headers &&
@@ -70,10 +71,10 @@ export abstract class Interceptor {
           return reject('Unable to load local datas');
         });
       };
-      request.headers = {
-        [AxiosPluginHeader.CACHE_CONTENT_HEADER]: JSON.stringify(response),
-        ...request.headers,
-      };
+      request.headers.set(
+        AxiosPluginHeader.CACHE_CONTENT_HEADER,
+        JSON.stringify(response)
+      );
     }
 
     return request;
@@ -93,5 +94,5 @@ export abstract class Interceptor {
 }
 
 export enum CachePlugin {
-  NODE_CACHE = 'NODE_CACHE',
+  NODE_CACHE = 'NODE_CACHE'
 }

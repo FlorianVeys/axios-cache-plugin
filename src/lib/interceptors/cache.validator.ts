@@ -1,4 +1,4 @@
-import { AxiosRequestConfig, AxiosResponse } from '~/infrastructure';
+import { InternalAxiosRequestConfig, AxiosResponse } from 'axios';
 
 export class CacheValidator {
   private statusAllowed = [301, 302, 307, 308, 410];
@@ -8,7 +8,7 @@ export class CacheValidator {
   }
 
   private isMethodAllowed(
-    request: AxiosRequestConfig,
+    request: InternalAxiosRequestConfig,
     methodAllowed = ['GET']
   ): boolean {
     return methodAllowed.includes(request.method ?? '');
@@ -28,7 +28,7 @@ export class CacheValidator {
     response: AxiosResponse,
     methodAllowed?: string[]
   ): boolean {
-    const request = response.request as AxiosRequestConfig;
+    const request = response.request as InternalAxiosRequestConfig;
     if (!request) {
       return false;
     }
